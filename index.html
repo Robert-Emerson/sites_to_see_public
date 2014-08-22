@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+	<head>
+	    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+	
+	    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+	    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+
+		<title>Sights to See</title>
+
+		<script>
+	        $(function() {
+	          $( "input[type=submit], button" )
+	            .button()
+	            .click(function( event ) {
+	              event.preventDefault();
+	            });
+	        });
+      	</script>
+
+      	<script type="text/javascript">
+	        function UpdateMe(uid, url, lat, lon) {
+			$("#view").show();
+			document.getElementById("view").onclick = function() {
+				window.location.href = './view/?val=' + uid;
+			}
+	        	$.ajax({
+				global: false,
+				type: 'POST',
+		                url: "./update.php",
+		     		data: {'uid': uid, 'url': url, 'lat': lat, 'lon': lon},
+		                method: 'POST',
+		                success: function(data){		                	
+	        				$("#itemAdded").show().fadeOut(6000);
+	        			}
+	        	});
+	        }
+      	</script>
+
+      	<script type="text/javascript">
+		$( document ).ajaxStart(function() {
+  			$("#loading" ).show();
+			$("#loading1").show();
+		});
+
+		$( document).ajaxStop(function() {
+			$("#loading").hide();
+			$("#loading1").hide();
+		});
+
+	      	$(document).ready(function(){
+			$("#loading").hide();
+			$("#loading1").hide();
+		      	$("#view").hide();
+			$("#itemAdded").hide();
+			$("#subheading").hide();
+
+		        $("#CityButton").click(function() {
+		            $.ajax({
+		            	type: 'GET',
+		                url: "./load.php",
+	     			data: $('#CityForm').serialize(),
+		                method: 'GET',
+		                success: function(data){
+		                	if (data != null) {
+		$("#content").html(data);
+		$("#subheading").show();
+		$("#heading").text("Here are some interesting photos from around there! Let's see if any pique your interest:");
+		                	}
+				}
+	            	});
+		        });
+
+		        $("#MyLocation").click(function() {
+		        	if(navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+					    	$.ajax({
+			            		type: 'GET',
+				                url: "./load.php",
+				     		data: {'type': 'GPS', 'lat': position.coords.latitude, 'lon': position.coords.longitude},
+				                method: 'GET',
+				                success: function(data){
+				                	if (data != null) {
+		$("#content").html(data);
+		$("#subheading").show()
+		$("#heading").text("Here're some fun ones from your neighborhood:");
+		}
+				                }
+            				});
+						});	
+
+					} else {
+						alert('Geolocation not detected');  
+					} 		
+
+		          
+		        });
+
+
+			});
+    	</script>
+<style>
+input[type="image"] {max-width: 100%;}
+img {max-width: 100%;}
+body {background-image:url("images/background.gif");}
+
+</style>
+	 </head>
+		<body>
+
+<div style = "position: fixed; top: 50px; left: 50px;">
+<input type="submit" value="Always bring a map!" id="view" style="padding:8px 16px;font-size:16px;">
+</div>
+	<div class="container">
+	<div class="alert alert-success" id="itemAdded" style="position:fixed;box-flex:5">
+		<strong>Awesome!</strong> You'll be adventuring in no time.
+		</div>
+
+		<div class="jumbotron">
+			<h1> Sights to See! </h1>
+			<p class="lead"> Pick a city around the world, or maybe just the world around you, and find exciting images that'll inspire you to explore!</p>
+		</div>
+
+		<div class="row marketing" style="text-align:center;">
+		  <div class="col-lg-6">
+
+		    <h3>Pick a city!</h3>
+			<p> Enter a city and see what's there!</p>
+			<form id="CityForm" action="stuff.php" method="GET">
+				City: <input id="city" type="text" name="city"><br>
+				<input type="hidden" value="city" name="type"><br>
+				<input type="submit" id="CityButton" value="Adventure is out there!">
+			</form>
+		  </div>
+		  <div class="col-lg-6">
+		    <h3>Just browsing the town...</h3>
+			<p> Or, just see what's going on around you! </p>
+			<input type="submit" id="MyLocation" value="Just around the riverbend!">
+		  </div>
+		
+		</div>
+		<h4 id="loading1" style="text-align:center">Sorry it takes a bit to find you awesome photos</h4>
+		<img style="display:block;margin-left:auto;margin-right:auto;" id="loading" src="http://www.projectalexa.com/static/img/large-ajax-loader.gif" alt="Sorry, but it takes a bit to bring you awesome places!">
+		<h2 id="heading"></h2>
+		<h4 id="subheading">Just click on pictures that you like. Once you've finished you can then click on the "Always bring a map!" button to have a map for your explorations!</h4>
+		<div id="content"></div>
+	</div>
+	</body>

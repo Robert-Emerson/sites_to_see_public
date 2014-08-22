@@ -1,0 +1,25 @@
+<?php
+//Example config.php file for Sites to See!
+//Set the permissions on this file to 700
+
+//API Keys (Flickr, Google, Twilio)
+$flickr_api_key = "YOUR_UNIQUE_FLICKR_API_KEY_GOES_HERE";
+$google_api_key = "YOUR_UNIQUE_GOOGLE_API_KEY_GOES_HERE";
+
+$twilio_auth_token = "YOUR_UNIQUE_TWILIO_AUTH_TOKEN_GOES_HERE";
+$twilio_account_sid = "YOUR_UNIQUE_TWILIO_ACCOUNT_SID_GOES_HERE";
+
+//Login info for MongoLab DB instance
+$mongodb_username = "USERNAME_FOR_MONGODB_SERVER";
+$mongodb_password = "PASSWORD_FOR_MONGODB_SERVER";
+
+//Assorted other personal information
+$twilio_phone_number = "YOUR_UNIQUE_TWILIO_PHONE_NUMBER";
+
+//MongoDB connection information
+$connecting_string = sprintf('mongodb://%s:%d/%s', 'URL_TO_MONGODB_SERVER', 'PORT_FOR_DB_SERVER_AS_INT, 'DB_NAME');
+$connection=  new Mongo($connecting_string,array('username'=>'USERNAME','password'=>'PASSWORD'));
+$dbname = $connection->selectDB('DB_NAME');
+
+
+?>
